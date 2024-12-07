@@ -17,4 +17,16 @@ public class EmptyPlace extends Entity {
     public String toString() {
         return "...";
     }
+
+    @Override
+    public void print() {
+
+
+
+    }
+
+    @Override
+    public void move() {
+
+    }
 }

@@ -17,4 +17,15 @@ public class Rock extends Entity {
     public boolean equals(Object obj) {
         return super.equals(obj);
     }
+
+
+    @Override
+    public void print() {
+
+    }
+
+    @Override
+    public void move() {
+
+    }
 }

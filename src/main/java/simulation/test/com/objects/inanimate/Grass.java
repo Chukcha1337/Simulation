@@ -18,4 +18,13 @@ public class Grass extends Entity {
         return super.equals(obj);
     }
 
+    @Override
+    public void print() {
+
+    }
+
+    @Override
+    public void move() {
+
+    }
 }

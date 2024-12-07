@@ -2,7 +2,7 @@ package simulation.test.com.objects.alive;
 
 import simulation.test.com.objects.Entity;
 
-public abstract class Creature extends Entity {
+public abstract class Creature extends Entity   {
     protected int speed;
     protected int health;
 
@@ -14,5 +14,14 @@ public abstract class Creature extends Entity {
         return health;
     }
 
+    public void changeHealth(int value) {
+        this.health += value;
+    }
+
     public abstract void makeMove();
+
+    @Override
+    public void print() {
+        System.out.println("Creature");
+    }
 }

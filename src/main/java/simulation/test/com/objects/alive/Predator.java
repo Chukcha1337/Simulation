@@ -11,7 +11,14 @@ private final int attackDamage = 3;
     public int getHealth() {
         return super.getHealth();
     }
-
+    @Override
+    public int getSpeed() {
+        return super.getSpeed();
+    }
+    @Override
+    public void changeHealth(int value) {
+        super.changeHealth(value);
+    }
     @Override
     public String toString() {
         return "\uD83D\uDC3A ";
@@ -33,7 +40,13 @@ private final int attackDamage = 3;
         //
     }
 
+
     public void eat(){};
 
     public void attack(Herbivore herbivore){};
+
+    @Override
+    public void move() {
+
+    }
 }
