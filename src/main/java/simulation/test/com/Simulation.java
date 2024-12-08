@@ -21,17 +21,39 @@ public class Simulation {
     public static void main(String[] args) {
         World world = createCurrentWorld();
         world.printWorld();
+while (true) {
+    List<Entity> herbivore = getMap().entrySet().stream().filter(a -> a.getValue().getClass().equals(Herbivore.class)).
+            map(Map.Entry::getValue).collect(Collectors.toList());
+//        System.out.println(herbivore);
 
-        List<Entity> herbivore = getMap().entrySet().stream().filter(a -> a.getValue().getClass().equals(Herbivore.class)).
-                map(Map.Entry::getValue).collect(Collectors.toList());
-        System.out.println(herbivore);
+    List<Entity> predators = getMap().entrySet().stream().filter(a -> a.getValue().getClass().equals(Predator.class)).
+            map(Map.Entry::getValue).collect(Collectors.toList());
+//        System.out.println(predators);
 
-          List<Entity> predators = getMap().entrySet().stream().filter(a -> a.getValue().getClass().equals(Predator.class)).
-                map(Map.Entry::getValue).collect(Collectors.toList());
-        System.out.println(predators);
-
-        herbivore.get(0).move();
+    for (Entity entity : herbivore) {
+        entity.move();
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         world.printWorld();
+        System.out.println();
+    }
+    for (Entity entity : predators) {
+        entity.move();
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        world.printWorld();
+        System.out.println();
+    }
+}
+//        herbivore.get(0).move();
+//        world.printWorld();
+
 
 
 

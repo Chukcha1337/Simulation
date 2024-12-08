@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class World {
     public static final int MAP_SIDE = 10;
-    public static final double MAP_FULLNESS_MULTIPLIER = 0.3;
+    public static final double MAP_FULLNESS_MULTIPLIER = 0.1;
     public static final int MAX_ROCKS = (int) (MAP_SIDE * MAP_FULLNESS_MULTIPLIER);
     public static final int MAX_TREES = (int) (2 * MAP_SIDE * MAP_FULLNESS_MULTIPLIER);
     public static final int MAX_GRASS = (int) (4 * MAP_SIDE * MAP_FULLNESS_MULTIPLIER);
