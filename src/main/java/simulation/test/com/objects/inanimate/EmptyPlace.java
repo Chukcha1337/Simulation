@@ -18,15 +18,4 @@ public class EmptyPlace extends Entity {
         return "...";
     }
 
-    @Override
-    public void print() {
-
-
-
-    }
-
-    @Override
-    public void move() {
-
-    }
 }

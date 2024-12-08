@@ -4,9 +4,7 @@ import simulation.test.com.objects.*;
 import simulation.test.com.objects.alive.*;
 import simulation.test.com.objects.inanimate.*;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class World {
     public static final int MAP_SIDE = 10;
@@ -17,13 +15,20 @@ public class World {
     public static final int MAX_HERBIVORES = (int) (2 * MAP_SIDE * MAP_FULLNESS_MULTIPLIER);
     public static final int MAX_PREDATORS = (int) (MAP_SIDE * MAP_FULLNESS_MULTIPLIER);
     private static final Map<Node, Entity> map = new LinkedHashMap<>();
+    private static final List<Herbivore> herbivoresList = new LinkedList<>();
+    private static final List<Predator> predatorsList = new LinkedList<>();
+    private static final List<Grass> grassList = new LinkedList<>();
+
+    public static int getMaxGrass() {
+        return MAX_GRASS;
+    }
 
     public static World createCurrentWorld() {
         World world = new World();
         setEmptyWorld(world);
         set(new Rock(), MAX_ROCKS);
         set(new Tree(), MAX_TREES);
-        set(new Grass(), MAX_GRASS);
+        setGrass(MAX_GRASS);
         setHerbivores(MAX_HERBIVORES);
         setPredators(MAX_PREDATORS);
         return world;
@@ -45,7 +50,6 @@ public class World {
         int counter = 0;
         Random random = new Random();
         while (counter < MAX_VALUE) {
-
             Node node = new Node(random.nextInt(MAP_SIDE), random.nextInt(MAP_SIDE));
             if (map.get(node).getClass() == EmptyPlace.class) {
                 map.put(node, entity);
@@ -62,6 +66,7 @@ public class World {
             Node node = new Node(random.nextInt(MAP_SIDE), random.nextInt(MAP_SIDE));
             if (map.get(node).getClass() == EmptyPlace.class) {
                 map.put(node, herbivore);
+                herbivoresList.add(herbivore);
                 counter++;
             }
         }
@@ -73,7 +78,21 @@ public class World {
             Predator predator = new Predator();
             Node node = new Node(random.nextInt(MAP_SIDE), random.nextInt(MAP_SIDE));
             if (map.get(node).getClass() == EmptyPlace.class) {
+                predatorsList.add(predator);
                 map.put(node, predator);
+                counter++;
+            }
+        }
+    }
+    public static void setGrass(int MAX_VALUE) {
+        int counter = getGrass().size();
+        Random random = new Random();
+        while (counter < MAX_VALUE) {
+            Grass grass = new Grass();
+            Node node = new Node(random.nextInt(MAP_SIDE), random.nextInt(MAP_SIDE));
+            if (map.get(node).getClass() == EmptyPlace.class) {
+                grassList.add(grass);
+                map.put(node, grass);
                 counter++;
             }
         }
@@ -91,5 +110,16 @@ public class World {
     public static Map<Node, Entity> getMap() {
         return map;
     }
+    public static List<Herbivore> getHerbivores() {
+        return herbivoresList;
+    }
+    public static List<Predator> getPredators() {
+        return predatorsList;
+    }
+    public static List<Grass> getGrass() {
+        return grassList;
+    }
+
+
 }
 

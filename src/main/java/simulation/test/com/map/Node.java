@@ -6,19 +6,12 @@ public class Node {
     private double cost = 1;
     private Node previous;
 
-    public Node getPrevious() {
-        return previous;
-    }
-
-    public void setPrevious(Node previous) {
-        this.previous = previous;
-    }
-
     public Node(int y, int x, int cost) {
         this.y = y;
         this.x = x;
         this.cost = cost;
     }
+
     public Node(int y, int x) {
         this.y = y;
         this.x = x;
@@ -30,6 +23,14 @@ public class Node {
 
     public int getX() {
         return x;
+    }
+
+    public Node getPrevious() {
+        return previous;
+    }
+
+    public void setPrevious(Node previous) {
+        this.previous = previous;
     }
 
     public double getCost() {

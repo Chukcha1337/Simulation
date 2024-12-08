@@ -1,18 +1,20 @@
 package simulation.test.com.objects.alive;
 import simulation.test.com.map.Node;
 import simulation.test.com.map.World;
+import simulation.test.com.objects.Entity;
 import simulation.test.com.objects.inanimate.EmptyPlace;
 import simulation.test.com.objects.inanimate.Grass;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static simulation.test.com.map.World.getGrass;
 import static simulation.test.com.map.World.getMap;
 
 public class Herbivore extends Creature {
 
     public Herbivore() {
         health = 3;
-        speed = 3;
+        speed = 1;
     }
 
     @Override
@@ -47,21 +49,6 @@ public class Herbivore extends Creature {
 
     @Override
     public void makeMove() {
-        while (getSpeed() != 0) {
-            // findWay
-            // if (map.get(coordinates).getClass() == Grass.class)
-            // eat
-            // else move
-        }
-    }
-
-    @Override
-    public void print() {
-        System.out.println("Herbivore");
-    }
-
-    @Override
-    public void move() {
         // текущая координата существа
         Node startNode = getMap().entrySet().stream().filter(a -> a.getValue().equals(this)).
                 map(Map.Entry::getKey).findFirst().orElse(new Node(0, 0));
@@ -77,10 +64,11 @@ public class Herbivore extends Creature {
 //        System.out.println(reachable);
 
         Node target = new Node(0, 0);
-        int difference = World.MAP_SIDE;
+        double difference = World.MAP_SIDE;
         // присваиваем таргету самую ближнюю пищу
         for (Node node : food) {
-            int curentDiff = Math.abs(node.getX() - startNode.getX()) + Math.abs(node.getY() - startNode.getY());
+
+            double curentDiff = Math.sqrt((Math.pow(node.getX() - startNode.getX(), 2) + Math.pow(node.getY() - startNode.getY(), 2)));
             if (curentDiff < difference) {
                 difference = curentDiff;
                 target = node;
@@ -157,6 +145,9 @@ public class Herbivore extends Creature {
             path.removeLast();
             if (path.getLast().equals(target)) {
 //            eat();
+                Grass grass = (Grass) getMap().get(target);
+                getGrass().remove(grass);
+
                 getMap().put(path.getLast(), this);
                 getMap().put(path.getLast().getPrevious(), new EmptyPlace());
                 break;

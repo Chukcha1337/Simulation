@@ -1,66 +1,83 @@
 package simulation.test.com;
 
-import simulation.test.com.map.Coordinate;
-import simulation.test.com.map.Node;
+
 import simulation.test.com.map.World;
-import simulation.test.com.objects.Entity;
-import simulation.test.com.objects.alive.Creature;
 import simulation.test.com.objects.alive.Herbivore;
 import simulation.test.com.objects.alive.Predator;
-import simulation.test.com.objects.inanimate.Grass;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.concurrent.*;
 
-import static simulation.test.com.map.World.createCurrentWorld;
-import static simulation.test.com.map.World.getMap;
+import static simulation.test.com.map.World.*;
 
 public class Simulation {
+    public static Scanner scanner = new Scanner(System.in);
+
     public static void main(String[] args) {
         World world = createCurrentWorld();
         world.printWorld();
-while (true) {
-    List<Entity> herbivore = getMap().entrySet().stream().filter(a -> a.getValue().getClass().equals(Herbivore.class)).
-            map(Map.Entry::getValue).collect(Collectors.toList());
-//        System.out.println(herbivore);
 
-    List<Entity> predators = getMap().entrySet().stream().filter(a -> a.getValue().getClass().equals(Predator.class)).
-            map(Map.Entry::getValue).collect(Collectors.toList());
-//        System.out.println(predators);
+        startSimulation(world);
+    }
 
-    for (Entity entity : herbivore) {
-        entity.move();
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        world.printWorld();
+    public static void nextTurn(World world) {
         System.out.println();
-    }
-    for (Entity entity : predators) {
-        entity.move();
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+//        try {
+//            Thread.sleep(2000);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
+        for (Herbivore herbivore : getHerbivores()) {
+            herbivore.makeMove();
         }
+        for (Predator predator : getPredators()) {
+            predator.makeMove();
+        }
+        setGrass(getMaxGrass());
         world.printWorld();
-        System.out.println();
+
     }
-}
-//        herbivore.get(0).move();
-//        world.printWorld();
 
-
-
-
-
-
+    public static void startSimulation(World world) {
+        System.out.println("Нажмите любую клавишу для старта/паузы симуляции");
+        if (scanner.hasNextLine()) {
+            scanner.nextLine();
         }
 
+        while (true) {
+            nextTurn(world);
+            System.out.println();
+//            try {
+//                Thread.sleep(2000);
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            Future<String> future = executorService.submit(() -> {
+                return scanner.nextLine();
+            });
+            executorService.shutdown();
+            try {
+                if (future.get(2,TimeUnit.SECONDS) != null) {
+                    scanner.nextLine();
+                };
+            } catch (ExecutionException | TimeoutException | InterruptedException e) {
+                future.cancel(true);
+            }
 
+            System.out.println("dasd");
+            }
+
+        }
     }
+
+
+
+
+
+
+
+
+
+
 

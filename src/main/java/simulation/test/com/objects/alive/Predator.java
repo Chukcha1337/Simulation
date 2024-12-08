@@ -8,13 +8,14 @@ import simulation.test.com.objects.inanimate.Grass;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static simulation.test.com.map.World.getHerbivores;
 import static simulation.test.com.map.World.getMap;
 
 public class Predator extends Creature{
 private final int attackDamage = 3;
     public Predator() {
         health = 5;
-        speed = 5;
+        speed = 1;
     }
 
     @Override
@@ -44,19 +45,12 @@ private final int attackDamage = 3;
         return super.equals(obj);
     }
 
-    @Override
-    public void makeMove() {
-        //findWay
-        //
-    }
-
-
     public void eat(){};
 
     public void attack(Herbivore herbivore){};
 
     @Override
-    public void move() {
+    public void makeMove() {
         // текущая координата существа
         Node startNode = getMap().entrySet().stream().filter(a -> a.getValue().equals(this)).
                 map(Map.Entry::getKey).findFirst().orElse(new Node(0, 0));
@@ -157,6 +151,7 @@ private final int attackDamage = 3;
                     Herbivore herbivore = (Herbivore) getMap().get(target);
                     herbivore.changeHealth(-this.attackDamage);
                     if (herbivore.getHealth() <= 0) {
+                        getHerbivores().remove(herbivore);
                         getMap().put(path.getLast(), this);
                         getMap().put(path.getLast().getPrevious(), new EmptyPlace());
                     }

@@ -20,8 +20,4 @@ public abstract class Creature extends Entity   {
 
     public abstract void makeMove();
 
-    @Override
-    public void print() {
-        System.out.println("Creature");
-    }
 }
