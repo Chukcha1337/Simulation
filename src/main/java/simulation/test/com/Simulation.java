@@ -1,6 +1,7 @@
 package simulation.test.com;
 
 import simulation.test.com.map.Coordinate;
+import simulation.test.com.map.Node;
 import simulation.test.com.map.World;
 import simulation.test.com.objects.Entity;
 import simulation.test.com.objects.alive.Creature;
@@ -30,10 +31,8 @@ public class Simulation {
         System.out.println(predators);
 
 
-        for( Entity entity : herbivore ) {
-            entity.move();
-        }
         world.printWorld();
+        System.out.println(getMap().get(new Node(1,2)).toString());
 
 
 
