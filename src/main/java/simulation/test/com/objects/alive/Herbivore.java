@@ -59,6 +59,7 @@ public class Herbivore extends Creature {
             // else move
         }
     }
+
     @Override
     public void print() {
         System.out.println("Herbivore");
@@ -68,16 +69,19 @@ public class Herbivore extends Creature {
     public void move() {
         // текущая координата существа
         Node startNode = getMap().entrySet().stream().filter(a -> a.getValue().equals(this)).
-                map(Map.Entry::getKey).findFirst().orElse(new Node(0,0));
+                map(Map.Entry::getKey).findFirst().orElse(new Node(0, 0));
+        System.out.println(startNode);
         // сет координат пищи
         Set<Node> food = getMap().entrySet().stream().filter(a -> a.getValue().getClass().equals(Grass.class)).
                 map(Map.Entry::getKey).collect(Collectors.toSet());
+        System.out.println(food);
         // сет достижимых клеток
         Set<Node> reachable = new LinkedHashSet<>();
         // добавляем текущий узел
         reachable.add(startNode);
+        System.out.println(reachable);
 
-        Node target = new Node(0,0);
+        Node target = new Node(0, 0);
         int difference = World.MAP_SIDE;
         // присваиваем таргету самую ближнюю пищу
         for (Node node : food) {
@@ -87,22 +91,39 @@ public class Herbivore extends Creature {
                 target = node;
             }
         }
+        System.out.println(target);
         Set<Node> explored = new LinkedHashSet<>();
+        List<Node> path = new LinkedList<>();
         // currentNode - текущее место зайца, target - цель зайца
         while (!reachable.isEmpty()) {
 
             double maxCost = 100.0;
-            Node current = new Node(0,0,100);
+            Node current = new Node(0, 0, 100);
             for (Node node : reachable) {
+                if (node.equals(target)) {
+                    current = node;
+                    break;
+                }
                 if (node.getCost() < maxCost) {
                     maxCost = node.getCost();
                     current = node;
-                };
+                }
+                ;
             }
+            System.out.println("Current node" + current);
 
             if (current.equals(target)) {
                 // buildPath
                 // break
+                try {
+                    while (!current.equals(null)) {
+                        path.add(current);
+                        current = current.getPrevious();
+                    }
+                } catch (NullPointerException e) {
+                    break;
+                }
+
             }
             reachable.remove(current);
             explored.add(current);
@@ -112,11 +133,14 @@ public class Herbivore extends Creature {
             for (int y = -1; y <= 1; y++) {
                 for (int x = -1; x <= 1; x++) {
                     if (Math.abs(x) + Math.abs(y) == 1) {
-                        Node node = new Node(current.getX() + x, current.getY() + y);
+                        Node node = new Node(current.getY() + y, current.getX() + x);
                         if (node.getX() < 0 || node.getX() == World.MAP_SIDE || node.getY() < 0 || node.getY() == World.MAP_SIDE) {
                             continue;
                         }
-                        if (getMap().get(node).getClass().equals(EmptyPlace.class) && !explored.contains(node)) {
+                        if (node.equals(target)) {
+                            newReachable.add(node);
+                        }
+                        if ((getMap().get(node).getClass().equals(EmptyPlace.class) && !explored.contains(node))) {
                             node.setCost(Math.sqrt((Math.pow(node.getX() - target.getX(), 2) + Math.pow(node.getY() - target.getY(), 2))));
                             newReachable.add(node);
                         }
@@ -125,27 +149,22 @@ public class Herbivore extends Creature {
             }
             for (Node node : newReachable) {
                 if (!reachable.contains(node)) {
-
+                    node.setPrevious(current);
                     reachable.add(node);
                 }
             }
-
-
-
+            System.out.println(reachable);
         }
+        System.out.println(path);
 
-
-
-
-
-
-
-
-
-
-
-//        getMap().put(target, this);
-//        getMap().put(currentCoordinate, new EmptyPlace());
+        int stepsLeft = this.getSpeed();
+        Node currentLocation = startNode;
+        while (stepsLeft > 0) {
+            getMap().put(path.getLast().getPrevious(), getMap().get(currentLocation));
+            getMap().put(currentLocation, new EmptyPlace());
+            path.removeLast();
+            stepsLeft--;
+        }
     }
 
 //    public void findPath () {
@@ -167,10 +186,8 @@ public class Herbivore extends Creature {
 //        System.out.println(target);
 
 
+    Set<Coordinate> rightPath = new LinkedHashSet<>();
+    List<Coordinate> adas = new ArrayList<>();
 
-
-        Set<Coordinate> rightPath = new LinkedHashSet<>();
-        List<Coordinate> adas = new ArrayList<>();
-
-    }
+}
 

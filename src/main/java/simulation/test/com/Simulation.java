@@ -30,9 +30,10 @@ public class Simulation {
                 map(Map.Entry::getValue).collect(Collectors.toList());
         System.out.println(predators);
 
-
+        herbivore.get(0).move();
         world.printWorld();
-        System.out.println(getMap().get(new Node(1,2)).toString());
+
+
 
 
 
