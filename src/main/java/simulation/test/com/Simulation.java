@@ -47,29 +47,29 @@ public class Simulation {
         while (true) {
             nextTurn(world);
             System.out.println();
-//            try {
-//                Thread.sleep(2000);
-//            } catch (InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
-            ExecutorService executorService = Executors.newSingleThreadExecutor();
-            Future<String> future = executorService.submit(() -> {
-                return scanner.nextLine();
-            });
-            executorService.shutdown();
             try {
-                if (future.get(2,TimeUnit.SECONDS) != null) {
-                    scanner.nextLine();
-                };
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            Future<String> future = executorService.submit(() -> scanner.nextLine());
+            executorService.shutdown();
+            System.out.println("before");
+            try {
+                if (future.get(2, TimeUnit.SECONDS) != null) {
+                    break;
+                }
+                ;
             } catch (ExecutionException | TimeoutException | InterruptedException e) {
                 future.cancel(true);
             }
-
-            System.out.println("dasd");
-            }
+            System.out.println("after");
 
         }
+
     }
+}
 
 
 

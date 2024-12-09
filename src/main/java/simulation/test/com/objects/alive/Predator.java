@@ -15,7 +15,7 @@ public class Predator extends Creature{
 private final int attackDamage = 3;
     public Predator() {
         health = 5;
-        speed = 1;
+        speed = 2;
     }
 
     @Override
@@ -53,7 +53,7 @@ private final int attackDamage = 3;
     public void makeMove() {
         // текущая координата существа
         Node startNode = getMap().entrySet().stream().filter(a -> a.getValue().equals(this)).
-                map(Map.Entry::getKey).findFirst().orElse(new Node(0, 0));
+                map(Map.Entry::getKey).toList().getFirst();
 //        System.out.println(startNode);
         // сет координат пищи
         Set<Node> aim = getMap().entrySet().stream().filter(a -> a.getValue().getClass().equals(Herbivore.class)).
@@ -155,7 +155,8 @@ private final int attackDamage = 3;
                         getMap().put(path.getLast(), this);
                         getMap().put(path.getLast().getPrevious(), new EmptyPlace());
                     }
-                }
+                } else stepsLeft--;
+
                 getMap().put(path.getLast(), this);
                 getMap().put(path.getLast().getPrevious(), new EmptyPlace());
                 break;

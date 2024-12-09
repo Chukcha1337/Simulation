@@ -14,7 +14,7 @@ public class Herbivore extends Creature {
 
     public Herbivore() {
         health = 3;
-        speed = 1;
+        speed = 3;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class Herbivore extends Creature {
     public void makeMove() {
         // текущая координата существа
         Node startNode = getMap().entrySet().stream().filter(a -> a.getValue().equals(this)).
-                map(Map.Entry::getKey).findFirst().orElse(new Node(0, 0));
+                map(Map.Entry::getKey).toList().getFirst();
 //        System.out.println(startNode);
         // сет координат пищи
         Set<Node> food = getMap().entrySet().stream().filter(a -> a.getValue().getClass().equals(Grass.class)).

@@ -7,7 +7,8 @@ import simulation.test.com.objects.inanimate.*;
 import java.util.*;
 
 public class World {
-    public static final int MAP_SIDE = 10;
+    public static final int MAP_SIDE = 15;
+    public static final double MAP_MAX_DISTANCE = MAP_SIDE * Math.sqrt(2);
     public static final double MAP_FULLNESS_MULTIPLIER = 0.1;
     public static final int MAX_ROCKS = (int) (MAP_SIDE * MAP_FULLNESS_MULTIPLIER);
     public static final int MAX_TREES = (int) (2 * MAP_SIDE * MAP_FULLNESS_MULTIPLIER);
