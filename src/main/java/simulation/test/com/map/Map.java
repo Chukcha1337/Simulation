@@ -6,7 +6,7 @@ import simulation.test.com.objects.inanimate.*;
 
 import java.util.*;
 
-public class World {
+public class Map {
     public static final int MAP_SIDE = 15;
     public static final double MAP_MAX_DISTANCE = MAP_SIDE * Math.sqrt(2);
     public static final double MAP_FULLNESS_MULTIPLIER = 0.1;
@@ -15,7 +15,7 @@ public class World {
     public static final int MAX_GRASS = (int) (4 * MAP_SIDE * MAP_FULLNESS_MULTIPLIER);
     public static final int MAX_HERBIVORES = (int) (2 * MAP_SIDE * MAP_FULLNESS_MULTIPLIER);
     public static final int MAX_PREDATORS = (int) (MAP_SIDE * MAP_FULLNESS_MULTIPLIER);
-    private static final Map<Node, Entity> map = new LinkedHashMap<>();
+    private static final java.util.Map<Node, Entity> map = new LinkedHashMap<>();
     private static final List<Herbivore> herbivoresList = new LinkedList<>();
     private static final List<Predator> predatorsList = new LinkedList<>();
     private static final List<Grass> grassList = new LinkedList<>();
@@ -24,28 +24,26 @@ public class World {
         return MAX_GRASS;
     }
 
-    public static World createCurrentWorld() {
-        World world = new World();
-        setEmptyWorld(world);
+    public static Map createCurrentWorld() {
+        Map map = new Map();
+        setEmptyWorld(map);
         set(new Rock(), MAX_ROCKS);
         set(new Tree(), MAX_TREES);
         setGrass(MAX_GRASS);
         setHerbivores(MAX_HERBIVORES);
         setPredators(MAX_PREDATORS);
-        return world;
+        return map;
     }
 
-    public static void setEmptyWorld(World world) {
+    public static void setEmptyWorld(Map map) {
         for (int y = 0; y < MAP_SIDE; y++) {
             for (int x = 0; x < MAP_SIDE; x++) {
                 Node node = new Node(y, x);
                 Entity entity = new EmptyPlace();
-                map.put(node, entity);
+                Map.map.put(node, entity);
             }
         }
     }
-
-
 
     public static void set(Entity entity, int MAX_VALUE) {
         int counter = 0;
@@ -72,6 +70,7 @@ public class World {
             }
         }
     }
+
     public static void setPredators(int MAX_VALUE) {
         int counter = 0;
         Random random = new Random();
@@ -85,8 +84,9 @@ public class World {
             }
         }
     }
+
     public static void setGrass(int MAX_VALUE) {
-        int counter = getGrass().size();
+        int counter = getGrassList().size();
         Random random = new Random();
         while (counter < MAX_VALUE) {
             Grass grass = new Grass();
@@ -100,7 +100,7 @@ public class World {
     }
 
     public void printWorld() {
-        for (Map.Entry<Node, Entity> entry : map.entrySet()) {
+        for (java.util.Map.Entry<Node, Entity> entry : map.entrySet()) {
             System.out.print(entry.getValue());
             if (entry.getKey().getX() == MAP_SIDE - 1) {
                 System.out.println();
@@ -108,16 +108,19 @@ public class World {
         }
     }
 
-    public static Map<Node, Entity> getMap() {
+    public static java.util.Map<Node, Entity> getMap() {
         return map;
     }
+
     public static List<Herbivore> getHerbivores() {
         return herbivoresList;
     }
+
     public static List<Predator> getPredators() {
         return predatorsList;
     }
-    public static List<Grass> getGrass() {
+
+    public static List<Grass> getGrassList() {
         return grassList;
     }
 
