@@ -16,36 +16,37 @@ public class Simulation {
     public static Scanner scanner = new Scanner(System.in);
 
     public static Map createCurrentWorld() {
-        Map map = new Map();
-        setEmptyWorld(map);
+        Map worldMap = new Map();
+        setEmptyWorld(worldMap);
         set(new Rock(), MAX_ROCKS);
         set(new Tree(), MAX_TREES);
         setGrass(MAX_GRASS);
         setHerbivores(MAX_HERBIVORES);
         setPredators(MAX_PREDATORS);
-        return map;
+        return worldMap;
     }
 
     public static void main(String[] args) {
-        Map map = createCurrentWorld();
-        map.printWorld();
+        Map worldMap = createCurrentWorld();
+        worldMap.printWorld();
 
-        startSimulation(map);
+        startSimulation(worldMap);
     }
 
-    public static void nextTurn(Map map) {
+    public static void nextTurn(Map worldMap) {
         for (Herbivore herbivore : getHerbivores()) {
             herbivore.makeMove();
+            worldMap.printWorld();
         }
         for (Predator predator : getPredators()) {
             predator.makeMove();
         }
-        setGrass(getMaxGrass());
-        map.printWorld();
+
+        worldMap.printWorld();
 
     }
 
-    public static void startSimulation(Map map) {
+    public static void startSimulation(Map worldMap) {
         if (scanner.hasNextLine()) {
             scanner.nextLine();
             try {
@@ -56,7 +57,7 @@ public class Simulation {
         }
         int counter = 0;
         while (true) {
-            nextTurn(map);
+            nextTurn(worldMap);
             System.out.println(counter++);
             System.out.println();
             ExecutorService executorService = Executors.newSingleThreadExecutor();

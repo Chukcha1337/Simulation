@@ -59,8 +59,9 @@ public class Predator extends Creature {
 
     @Override
     public void makeMove() {
+        isPathExist = true;
         stepsLeft = getSpeed();
-        while (stepsLeft > 0) {
+        while (stepsLeft > 0 && isPathExist) {
             getPath();
             pathToTarget.removeLast();
             if (pathToTarget.getLast().equals(targetNode)) {

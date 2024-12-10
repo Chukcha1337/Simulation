@@ -1,7 +1,8 @@
 package simulation.test.com.objects.alive;
 import simulation.test.com.objects.inanimate.Grass;
-import static simulation.test.com.map.Map.getGrassList;
-import static simulation.test.com.map.Map.getMap;
+
+import static simulation.test.com.map.Map.*;
+import static simulation.test.com.map.Map.getMaxGrass;
 
 public class Herbivore extends Creature {
 
@@ -48,16 +49,19 @@ public class Herbivore extends Creature {
 
     @Override
     public void makeMove() {
+        isPathExist = true;
         stepsLeft = getSpeed();
         while (stepsLeft > 0) {
             getPath();
-            if (pathToTarget.isEmpty()) {
+            if (!isPathExist) {
                 break;
             }
+            System.out.println(pathToTarget);
             pathToTarget.removeLast();
             if (pathToTarget.getLast().equals(targetNode)) {
                 eatGrass();
                 takeStep();
+                setGrass(getMaxGrass());
                 continue;
             }
             takeStep();
