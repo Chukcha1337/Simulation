@@ -12,7 +12,7 @@ import static simulation.test.com.map.Map.*;
 
 public class Simulation {
     public static Scanner scanner = new Scanner(System.in);
-
+    public static int counterOfTurns;
     public static Map createCurrentWorld() {
         Map worldMap = new Map();
         setEmptyWorld(worldMap);
