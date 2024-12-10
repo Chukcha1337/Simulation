@@ -2,15 +2,15 @@ package simulation.test.com.objects.alive;
 
 import java.util.*;
 
-import static simulation.test.com.map.Map.getHerbivores;
-import static simulation.test.com.map.Map.getMap;
+import static simulation.test.com.map.Map.*;
+import static simulation.test.com.map.Map.getMaxGrass;
 
 public class Predator extends Creature {
-    private final int attackDamage = 1;
+    private final int attackDamage = 2;
 
     public Predator() {
         health = 5;
-        speed = 1;
+        speed = 2;
         food = new Herbivore();
     }
 
@@ -49,10 +49,11 @@ public class Predator extends Creature {
         Random rand = new Random();
         if (rand.nextInt(10) > 2) {
             Herbivore herbivore = (Herbivore) getMap().get(targetNode);
-            herbivore.changeHealth(-this.attackDamage);
+            herbivore.changeHealth(this.attackDamage);
             if (herbivore.getHealth() <= 0) {
                 getHerbivores().remove(herbivore);
                 takeStep();
+                setHerbivores(getMaxHerbivores());
             } else stepsLeft--;
         }
     }
@@ -61,8 +62,11 @@ public class Predator extends Creature {
     public void makeMove() {
         isPathExist = true;
         stepsLeft = getSpeed();
-        while (stepsLeft > 0 && isPathExist) {
+        while (stepsLeft > 0) {
             getPath();
+            if (!isPathExist) {
+                break;
+            }
             pathToTarget.removeLast();
             if (pathToTarget.getLast().equals(targetNode)) {
                 attack();
@@ -71,5 +75,13 @@ public class Predator extends Creature {
             takeStep();
         }
     }
+
+
+
+
+
+
+
+
 
 }

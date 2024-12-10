@@ -1,12 +1,10 @@
 package simulation.test.com;
 
-
 import simulation.test.com.map.Map;
 import simulation.test.com.objects.alive.Herbivore;
 import simulation.test.com.objects.alive.Predator;
 import simulation.test.com.objects.inanimate.Rock;
 import simulation.test.com.objects.inanimate.Tree;
-
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -28,33 +26,22 @@ public class Simulation {
 
     public static void main(String[] args) {
         Map worldMap = createCurrentWorld();
-        worldMap.printWorld();
-
         startSimulation(worldMap);
     }
 
     public static void nextTurn(Map worldMap) {
         for (Herbivore herbivore : getHerbivores()) {
             herbivore.makeMove();
-            worldMap.printWorld();
         }
         for (Predator predator : getPredators()) {
             predator.makeMove();
         }
-
         worldMap.printWorld();
 
     }
 
     public static void startSimulation(Map worldMap) {
-        if (scanner.hasNextLine()) {
-            scanner.nextLine();
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
+
         int counter = 0;
         while (true) {
             nextTurn(worldMap);
@@ -68,9 +55,13 @@ public class Simulation {
                     break;
                 }
             } catch (ExecutionException | TimeoutException | InterruptedException e) {
-                future.cancel(true);
-            }
+                            }
+
         }
+    }
+    class MyThread extends Thread {
+
+
     }
 }
 

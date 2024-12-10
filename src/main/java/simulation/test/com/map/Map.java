@@ -9,11 +9,11 @@ import java.util.*;
 public class Map {
     public static final int MAP_SIDE = 15;
     public static final double MAP_MAX_DISTANCE = MAP_SIDE * Math.sqrt(2);
-    public static final double MAP_FULLNESS_MULTIPLIER = 0.1;
-    public static final int MAX_ROCKS = (int) (MAP_SIDE * MAP_FULLNESS_MULTIPLIER);
-    public static final int MAX_TREES = (int) (2 * MAP_SIDE * MAP_FULLNESS_MULTIPLIER);
+    public static final double MAP_FULLNESS_MULTIPLIER = 0.16;
+    public static final int MAX_ROCKS = (int) (3 * MAP_SIDE * MAP_FULLNESS_MULTIPLIER);
+    public static final int MAX_TREES = (int) (3 * MAP_SIDE * MAP_FULLNESS_MULTIPLIER);
     public static final int MAX_GRASS = (int) (4 * MAP_SIDE * MAP_FULLNESS_MULTIPLIER);
-    public static final int MAX_HERBIVORES = (int) (2 * MAP_SIDE * MAP_FULLNESS_MULTIPLIER);
+    public static final int MAX_HERBIVORES = (int) (4 * MAP_SIDE * MAP_FULLNESS_MULTIPLIER);
     public static final int MAX_PREDATORS = (int) (MAP_SIDE * MAP_FULLNESS_MULTIPLIER);
     private static final java.util.Map<Node, Entity> map = new LinkedHashMap<>();
     private static final List<Herbivore> herbivoresList = new LinkedList<>();
@@ -22,6 +22,10 @@ public class Map {
 
     public static int getMaxGrass() {
         return MAX_GRASS;
+    }
+
+    public static int getMaxHerbivores() {
+        return MAX_HERBIVORES;
     }
 
     public static Map createCurrentWorld() {
@@ -58,7 +62,7 @@ public class Map {
     }
 
     public static void setHerbivores(int MAX_VALUE) {
-        int counter = 0;
+        int counter = getHerbivores().size();
         Random random = new Random();
         while (counter < MAX_VALUE) {
             Herbivore herbivore = new Herbivore();
@@ -123,6 +127,7 @@ public class Map {
     public static List<Grass> getGrassList() {
         return grassList;
     }
+
 
 
 }

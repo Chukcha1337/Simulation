@@ -1,13 +1,12 @@
 package simulation.test.com.objects.alive;
 import simulation.test.com.objects.inanimate.Grass;
-
 import static simulation.test.com.map.Map.*;
 import static simulation.test.com.map.Map.getMaxGrass;
 
 public class Herbivore extends Creature {
 
     public Herbivore() {
-        health = 3;
+        health = 4;
         speed = 3;
         food = new Grass();
     }
@@ -56,7 +55,6 @@ public class Herbivore extends Creature {
             if (!isPathExist) {
                 break;
             }
-            System.out.println(pathToTarget);
             pathToTarget.removeLast();
             if (pathToTarget.getLast().equals(targetNode)) {
                 eatGrass();

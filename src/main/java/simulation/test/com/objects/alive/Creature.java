@@ -14,18 +14,18 @@ public abstract class Creature extends Entity {
     protected int speed;
     protected int health;
     protected int stepsLeft;
-    protected Node currentLocationNode;
-    protected Node targetNode;
     protected boolean isPathExist;
-    protected Set<Node> nonReachableTargets = new HashSet<>();
-    protected Node nodeBeingChecked;
-    protected Node potentialNodeToCheck;
     protected Entity food;
+    protected Node targetNode;
+    protected Node nodeBeingChecked;
+    protected Node currentLocationNode;
+    protected Node potentialNodeToCheck;
     protected Set<Node> foodLocations = new HashSet<>();
-    protected Set<Node> reachableLocations = new LinkedHashSet<>();
+    protected Set<Node> nonReachableTargets = new HashSet<>();
     protected Set<Node> exploredLocations = new LinkedHashSet<>();
-    protected List<Node> pathToTarget = new LinkedList<>();
     protected Set<Node> reachableFromHere = new LinkedHashSet<>();
+    protected Set<Node> reachableLocations = new LinkedHashSet<>();
+    protected List<Node> pathToTarget = new LinkedList<>();
 
 
     public int getSpeed() {
@@ -50,14 +50,6 @@ public abstract class Creature extends Entity {
     public void detectAllAims() {
         foodLocations = getMap().entrySet().stream().filter(a -> a.getValue().getClass().equals(food.getClass())).
                 map(java.util.Map.Entry::getKey).collect(Collectors.toSet());
-        System.out.println("Это список еды для " + this.getClass() + " " + foodLocations);
-        for (Node n : foodLocations) {
-            if (getMap().get(n).getClass().equals(food.getClass())) {
-                System.out.print(" true ");
-            } else {
-                System.out.print(" false ");
-            }
-        }
     }
 
     public void resetPreviousPath() {
@@ -73,18 +65,12 @@ public abstract class Creature extends Entity {
 
     public void getTargetNode() {
         double ShortestDistance = Map.MAP_MAX_DISTANCE;
-        System.out.println("Food locations here " + foodLocations);
         for (Node node : foodLocations) {
             double distanceToCurrentTarget = getShortestPathDistance(node, currentLocationNode);
             if (distanceToCurrentTarget < ShortestDistance && !nonReachableTargets.contains(node)) {
                 ShortestDistance = distanceToCurrentTarget;
                 targetNode = node;
             }
-        }
-        if (getMap().get(targetNode).getClass().equals(food.getClass())) {
-            System.out.println("Target is true " + targetNode);
-        } else {
-            System.out.println("Target is false " + targetNode);
         }
     }
 
@@ -184,6 +170,10 @@ public abstract class Creature extends Entity {
         }
     }
 
+    public boolean allFoodLocationsNonReachable() {
+        return nonReachableTargets.size() == foodLocations.size();
+    }
+
     public void getPath() {
         nonReachableTargets.clear();
         while (true) {
@@ -192,15 +182,10 @@ public abstract class Creature extends Entity {
             detectAllAims();
             reachableLocations.add(currentLocationNode);
             getTargetNode();
-            if (targetNode != null) {
-                createPathToTarget();
-            } else {
-                System.out.println("Target node is null");
-            }
+            createPathToTarget();
             if (pathToTarget.isEmpty()) {
                 nonReachableTargets.add(targetNode);
-                System.out.println(nonReachableTargets);
-                if (nonReachableTargets.size() == foodLocations.size()) {
+                if (allFoodLocationsNonReachable()) {
                     isPathExist = false;
                     break;
                 }
