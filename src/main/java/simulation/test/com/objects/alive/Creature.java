@@ -4,7 +4,6 @@ import simulation.test.com.map.Node;
 import simulation.test.com.map.Map;
 import simulation.test.com.objects.Entity;
 import simulation.test.com.objects.inanimate.EmptyPlace;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -42,14 +41,25 @@ public abstract class Creature extends Entity {
 
     public abstract void makeMove();
 
-    public void getCurrentNode() {
-        currentLocationNode = getMap().entrySet().stream().filter(a -> a.getValue().equals(this)).
-                map(java.util.Map.Entry::getKey).toList().getFirst();
-    }
-
-    public void detectAllAims() {
-        foodLocations = getMap().entrySet().stream().filter(a -> a.getValue().getClass().equals(food.getClass())).
-                map(java.util.Map.Entry::getKey).collect(Collectors.toSet());
+    public void getPath() {
+        nonReachableTargets.clear();
+        while (true) {
+            resetPreviousPath();
+            getCurrentNode();
+            detectAllAims();
+            reachableLocations.add(currentLocationNode);
+            getTargetNode();
+            createPathToTarget();
+            if (pathToTarget.isEmpty()) {
+                nonReachableTargets.add(targetNode);
+                if (allFoodLocationsNonReachable()) {
+                    isPathExist = false;
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
     }
 
     public void resetPreviousPath() {
@@ -59,8 +69,14 @@ public abstract class Creature extends Entity {
         pathToTarget.clear();
     }
 
-    public double getShortestPathDistance(Node firstNode, Node secondNode) {
-        return Math.sqrt((Math.pow(firstNode.getX() - secondNode.getX(), 2) + Math.pow(firstNode.getY() - secondNode.getY(), 2)));
+    public void getCurrentNode() {
+        currentLocationNode = getMap().entrySet().stream().filter(a -> a.getValue().equals(this)).
+                map(java.util.Map.Entry::getKey).toList().getFirst();
+    }
+
+    public void detectAllAims() {
+        foodLocations = getMap().entrySet().stream().filter(a -> a.getValue().getClass().equals(food.getClass())).
+                map(java.util.Map.Entry::getKey).collect(Collectors.toSet());
     }
 
     public void getTargetNode() {
@@ -72,74 +88,6 @@ public abstract class Creature extends Entity {
                 targetNode = node;
             }
         }
-    }
-
-    public void getNodeBeingChecked() {
-        double maxCost = Map.MAP_MAX_DISTANCE;
-        for (Node node : reachableLocations) {
-            if (node.equals(targetNode)) {
-                nodeBeingChecked = node;
-                break;
-            }
-            if (node.getCost() < maxCost) {
-                maxCost = node.getCost();
-                nodeBeingChecked = node;
-            }
-        }
-    }
-
-    public boolean isNodeReachable(int x, int y) {
-        return Math.abs(x) + Math.abs(y) == 1;
-    }
-
-    public void setPotentialNode(int x, int y) {
-        potentialNodeToCheck = new Node(nodeBeingChecked.getY() + y, nodeBeingChecked.getX() + x);
-    }
-
-    public boolean isNodeNotExist() {
-        return potentialNodeToCheck.getX() < 0 ||
-                potentialNodeToCheck.getX() == Map.MAP_SIDE ||
-                potentialNodeToCheck.getY() < 0 ||
-                potentialNodeToCheck.getY() == Map.MAP_SIDE;
-    }
-
-    public boolean isNodeNewAndFree() {
-        return (getMap().get(potentialNodeToCheck).getClass().equals(EmptyPlace.class) &&
-                !exploredLocations.contains(potentialNodeToCheck));
-    }
-
-    public void setNewReachableLocation() {
-        potentialNodeToCheck.setCost(getShortestPathDistance(potentialNodeToCheck, targetNode));
-        reachableFromHere.add(potentialNodeToCheck);
-    }
-
-    public void setPathToTarget() {
-        try {
-            while (true) {
-                pathToTarget.add(nodeBeingChecked);
-                if (nodeBeingChecked.getPrevious() == null) {
-                    break;
-                }
-                nodeBeingChecked = nodeBeingChecked.getPrevious();
-            }
-        } catch (NullPointerException e) {
-            System.out.println("NullPointerException");
-        }
-    }
-
-    public void setPreviousLocations() {
-        for (Node node : reachableFromHere) {
-            if (!reachableLocations.contains(node)) {
-                node.setPrevious(nodeBeingChecked);
-                reachableLocations.add(node);
-            }
-        }
-    }
-
-    public void prepareCollectionsToAddition() {
-        reachableLocations.remove(nodeBeingChecked);
-        exploredLocations.add(nodeBeingChecked);
-        reachableFromHere.clear();
     }
 
     public void createPathToTarget() {
@@ -170,30 +118,96 @@ public abstract class Creature extends Entity {
         }
     }
 
+    public void getNodeBeingChecked() {
+        double maxCost = Map.MAP_MAX_DISTANCE;
+        for (Node node : reachableLocations) {
+            if (node.equals(targetNode)) {
+                nodeBeingChecked = node;
+                break;
+            }
+            if (node.getCost() < maxCost) {
+                maxCost = node.getCost();
+                nodeBeingChecked = node;
+            }
+        }
+    }
+
+    public void prepareCollectionsToAddition() {
+        reachableLocations.remove(nodeBeingChecked);
+        exploredLocations.add(nodeBeingChecked);
+        reachableFromHere.clear();
+    }
+
+    public boolean isNodeReachable(int x, int y) {
+        return Math.abs(x) + Math.abs(y) == 1;
+    }
+
+    public boolean isNodeNotExist() {
+        return potentialNodeToCheck.getX() < 0 ||
+                potentialNodeToCheck.getX() == Map.MAP_SIDE ||
+                potentialNodeToCheck.getY() < 0 ||
+                potentialNodeToCheck.getY() == Map.MAP_SIDE;
+    }
+
+    public void setPotentialNode(int x, int y) {
+        potentialNodeToCheck = new Node(nodeBeingChecked.getY() + y, nodeBeingChecked.getX() + x);
+    }
+
+    public double getShortestPathDistance(Node firstNode, Node secondNode) {
+        return Math.sqrt((Math.pow(firstNode.getX() - secondNode.getX(), 2) + Math.pow(firstNode.getY() - secondNode.getY(), 2)));
+    }
+
+    public boolean isNodeNewAndFree() {
+        return (getMap().get(potentialNodeToCheck).getClass().equals(EmptyPlace.class) &&
+                !exploredLocations.contains(potentialNodeToCheck));
+    }
+
+    public void setPathToTarget() {
+        try {
+            while (true) {
+                pathToTarget.add(nodeBeingChecked);
+                if (nodeBeingChecked.getPrevious() == null) {
+                    break;
+                }
+                nodeBeingChecked = nodeBeingChecked.getPrevious();
+            }
+        } catch (NullPointerException e) {
+            System.out.println("NullPointerException");
+        }
+    }
+
+    public void setNewReachableLocation() {
+        potentialNodeToCheck.setCost(getShortestPathDistance(potentialNodeToCheck, targetNode));
+        reachableFromHere.add(potentialNodeToCheck);
+    }
+
+    public void setPreviousLocations() {
+        for (Node node : reachableFromHere) {
+            if (!reachableLocations.contains(node)) {
+                node.setPrevious(nodeBeingChecked);
+                reachableLocations.add(node);
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public boolean allFoodLocationsNonReachable() {
         return nonReachableTargets.size() == foodLocations.size();
     }
 
-    public void getPath() {
-        nonReachableTargets.clear();
-        while (true) {
-            resetPreviousPath();
-            getCurrentNode();
-            detectAllAims();
-            reachableLocations.add(currentLocationNode);
-            getTargetNode();
-            createPathToTarget();
-            if (pathToTarget.isEmpty()) {
-                nonReachableTargets.add(targetNode);
-                if (allFoodLocationsNonReachable()) {
-                    isPathExist = false;
-                    break;
-                }
-            } else {
-                break;
-            }
-        }
-    }
+
 
     public void takeStep() {
         getMap().put(pathToTarget.getLast(), this);

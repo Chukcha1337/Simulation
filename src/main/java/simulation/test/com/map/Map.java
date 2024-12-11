@@ -28,17 +28,6 @@ public class Map {
         return MAX_HERBIVORES;
     }
 
-    public static Map createCurrentWorld() {
-        Map map = new Map();
-        setEmptyWorld(map);
-        set(new Rock(), MAX_ROCKS);
-        set(new Tree(), MAX_TREES);
-        setGrass(MAX_GRASS);
-        setHerbivores(MAX_HERBIVORES);
-        setPredators(MAX_PREDATORS);
-        return map;
-    }
-
     public static void setEmptyWorld(Map map) {
         for (int y = 0; y < MAP_SIDE; y++) {
             for (int x = 0; x < MAP_SIDE; x++) {
@@ -79,7 +68,7 @@ public class Map {
         int counter = 0;
         Random random = new Random();
         while (counter < MAX_VALUE) {
-            Predator predator = new Predator();
+            Predator predator = new Predator(counter + 1);
             Node node = new Node(random.nextInt(MAP_SIDE), random.nextInt(MAP_SIDE));
             if (map.get(node).getClass() == EmptyPlace.class) {
                 predatorsList.add(predator);

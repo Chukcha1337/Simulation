@@ -1,10 +1,10 @@
-package simulation.test.com;
+package simulation.test.com.map;
 
-import simulation.test.com.map.Map;
 import simulation.test.com.objects.alive.Herbivore;
 import simulation.test.com.objects.alive.Predator;
 import simulation.test.com.objects.inanimate.Rock;
 import simulation.test.com.objects.inanimate.Tree;
+
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -12,7 +12,7 @@ import static simulation.test.com.map.Map.*;
 
 public class Simulation {
     public static Scanner scanner = new Scanner(System.in);
-    public static int counterOfTurns;
+
     public static Map createCurrentWorld() {
         Map worldMap = new Map();
         setEmptyWorld(worldMap);
@@ -24,29 +24,35 @@ public class Simulation {
         return worldMap;
     }
 
-    public static void main(String[] args) {
-        Map worldMap = createCurrentWorld();
-        startSimulation(worldMap);
-    }
-
     public static void nextTurn(Map worldMap) {
+        worldMap.printWorld();
         for (Herbivore herbivore : getHerbivores()) {
             herbivore.makeMove();
         }
         for (Predator predator : getPredators()) {
             predator.makeMove();
         }
-        worldMap.printWorld();
+
 
     }
 
     public static void startSimulation(Map worldMap) {
-
+        System.out.println("Приветствую Вас в симуляции! Нажмите Enter для старта симуляции. " +
+                "Для выхода, - нажмите Enter дважды");
+        if (scanner.hasNextLine()) {
+            scanner.nextLine();
+        }
         int counter = 0;
         while (true) {
             nextTurn(worldMap);
-            System.out.println(counter++);
+            setHerbivores(getMaxHerbivores());
             System.out.println();
+            System.out.println("Счетчик итераций: " + counter++ + "\n");
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             ExecutorService executorService = Executors.newSingleThreadExecutor();
             Future<String> future = executorService.submit(() -> scanner.nextLine());
             executorService.shutdown();
@@ -55,13 +61,9 @@ public class Simulation {
                     break;
                 }
             } catch (ExecutionException | TimeoutException | InterruptedException e) {
-                            }
+            }
 
         }
-    }
-    class MyThread extends Thread {
-
-
     }
 }
 

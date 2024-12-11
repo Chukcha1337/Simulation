@@ -7,8 +7,33 @@ public class Herbivore extends Creature {
 
     public Herbivore() {
         health = 4;
-        speed = 3;
+        speed = 4;
         food = new Grass();
+    }
+
+    @Override
+    public void makeMove() {
+        isPathExist = true;
+        stepsLeft = getSpeed();
+        while (stepsLeft > 0) {
+            getPath();
+            if (!isPathExist) {
+                break;
+            }
+            pathToTarget.removeLast();
+            if (pathToTarget.getLast().equals(targetNode)) {
+                eatGrass();
+                takeStep();
+                setGrass(getMaxGrass());
+                continue;
+            }
+            takeStep();
+        }
+    }
+
+    public void eatGrass() {
+        Grass grass = (Grass) getMap().get(targetNode);
+        getGrassList().remove(grass);
     }
 
     @Override
@@ -40,31 +65,5 @@ public class Herbivore extends Creature {
     public boolean equals(Object obj) {
         return super.equals(obj);
     }
-
-    public void eatGrass() {
-        Grass grass = (Grass) getMap().get(targetNode);
-        getGrassList().remove(grass);
-    }
-
-    @Override
-    public void makeMove() {
-        isPathExist = true;
-        stepsLeft = getSpeed();
-        while (stepsLeft > 0) {
-            getPath();
-            if (!isPathExist) {
-                break;
-            }
-            pathToTarget.removeLast();
-            if (pathToTarget.getLast().equals(targetNode)) {
-                eatGrass();
-                takeStep();
-                setGrass(getMaxGrass());
-                continue;
-            }
-            takeStep();
-        }
-    }
-
 }
 
